@@ -9,7 +9,7 @@
 
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
-  <link rel="stylesheet" href="assets/CSS/style.css">
+  <link rel="stylesheet" href="./assets/css/style.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,7 @@
 
 <header class="site-header">
   <div class="header-inner">
-    <a href="index.php" class="logo">
+    <a href="index.html" class="logo">
       <img src="assets/images/JAMUS STORIES_Logotype.svg" alt="Logo" height="40">
     </a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
@@ -646,7 +646,7 @@
 
 <!-- Scripts -->
 <script src="assets/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/main-script.js"></script>
+<script src="./assets/js/main-script.js"></script>
 
 
 
