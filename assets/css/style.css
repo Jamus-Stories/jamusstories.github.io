@@ -1,0 +1,996 @@
+/* ========== Vars ========== */
+:root {
+    --yellow: #FBEE6D;
+     /*--yellow: #ffffff; */
+
+    --accent: #2f254f;
+    --header-height: 64px;
+    /* collapsed header bar height */
+    --gradient-height: 60px;
+    /* gradient strip height */
+    --transition: 300ms ease;
+    --nav-gap: 1rem;
+}
+
+@font-face {
+    font-family: 'Frankly';
+    src: url('../font/Frankly-Light.woff2') format('woff2'),
+        url('../font/Frankly-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Frankly';
+    src: url('../font/Frankly-Regular.woff2') format('woff2'),
+        url('../font/Frankly-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Frankly';
+    src: url('../font/Frankly-Medium.woff2') format('woff2'),
+        url('../font/Frankly-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Frankly';
+    src: url('../font/Frankly-Semibold.woff2') format('woff2'),
+        url('../font/Frankly-Semibold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Frankly';
+    src: url('../font/Frankly-Bold.woff2') format('woff2'),
+        url('../font/Frankly-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+
+
+
+/* ========== Reset / Base ========== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    scroll-behavior: smooth;
+ 
+}
+
+body {
+    font-family: "Frankly", Arial, sans-serif;
+    color: var(--accent);
+    /*background: #fff;*/
+    background: var(--yellow);
+    line-height: 1.55;
+    font-size: 22px;
+    padding-top: 56px !important;
+}
+
+.img-fluid {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    text-transform: uppercase;
+}
+
+/* -------------------
+   Links
+------------------- */
+
+a {
+  color: var(--accent); // default link color
+  text-decoration: none;
+  cursor: pointer !important;
+}
+
+a:visited {
+  color: var(--accent); // visited color
+}
+
+a:hover {
+  color: var(--yellow); // hover color
+  text-decoration: underline;
+  cursor: pointer !important;
+}
+
+a:focus {
+  outline: 0; // focus ring
+  outline-offset: 0;
+}
+
+a:active {
+  color: var(--accent); // active (pressed) color
+}
+
+a.disabled,
+a[aria-disabled="true"] {
+  color: #adb5bd;
+  pointer-events: none;
+  cursor: default;
+}
+
+
+/* -------------------
+   Buttons
+------------------- */
+
+.btn {
+  /*color: #fff;*/
+    color: var(--yellow);
+  background-color: initial;
+  transition: all 0.2s ease;
+}
+
+/* Hover */
+.btn:hover {
+  background-color: initial;
+  border-color: none;
+  color: var(--yellow) !important;
+}
+
+/* Focus */
+.btn:focus,
+.btn:focus-visible {
+  outline: 2px solid #0a58ca;
+  outline-offset: 2px;
+}
+
+/* Active (clicked or toggled) */
+.btn:active,
+.btn.active {
+  background-color: #0a58ca;
+  border-color: #0a53be;
+  color: #fff;
+}
+
+/* Disabled */
+.btn:disabled,
+.btn.disabled {
+  background-color: #adb5bd;
+  border-color: #adb5bd;
+  color: #fff;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+
+
+/* ========== HEADER (collapsed by default) ========== */
+/* header background is transparent so the gradient strip (inside header) shows */
+header.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: transparent;
+    /* allow gradient to show */
+    z-index: 2200;
+    overflow: hidden;
+    max-height: calc(var(--header-height) + var(--gradient-height));
+    /* collapsed: header + gradient */
+    transition: max-height var(--transition), box-shadow var(--transition);
+}
+
+/* open state (JS will set exact max-height) */
+header.site-header.open {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* header-inner: the yellow bar */
+header.site-header>.header-inner {
+    background: var(--yellow);
+    /* the visible yellow bar */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-height);
+    padding: 0 1rem;
+    gap: 1rem;
+    position: relative;
+    z-index: 3;
+    /* keep header bar above gradient & dropdown content */
+}
+
+/* logo */
+header.site-header .logo img {
+    height: 20px;
+    display: block;
+}
+
+/* right controls wrapper */
+header.site-header .right-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--nav-gap);
+    z-index: 4;
+    /* above dropdown content */
+}
+
+/* nav toggle */
+.nav-toggle {
+    background: transparent;
+    border: none;
+    padding: .25rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+
+/* SVG icon lines — force 2px rounded stroke (overrides inline attributes) */
+/* Base styles for icon lines */
+.nav-icon line {
+    stroke: var(--accent) !important;
+    stroke-width: 8 !important;
+    stroke-linecap: round !important;
+    transition: transform 220ms cubic-bezier(.2, .9, .3, 1),
+        opacity 180ms ease;
+    transform-origin: 50% 50%;
+}
+
+/* When nav is open, rotate into an X */
+.nav-toggle.is-open .line-h {
+    transform: rotate(45deg) scaleX(1.15);
+}
+
+.nav-toggle.is-open .line-v {
+    transform: rotate(225deg) scaleY(1.15);
+}
+
+
+/* ========== INLINE NAV LINKS (left of hamburger) ========== */
+header.site-header .nav-links {
+    display: flex;
+    gap: calc(var(--nav-gap) * 2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition);
+}
+
+header.site-header .nav-links a {
+    font-size: 24px;
+    text-transform: uppercase;
+    /*letter-spacing: 1.25;*/
+    line-height: 1em;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0;
+    Padding-top: 4px;
+    /*border-radius: 4px;*/
+    white-space: nowrap;
+    border-bottom: 3px solid rgba(0,0,0,0);
+    cursor: pointer !important;
+}
+
+header.site-header.open .nav-links {
+    opacity: 1;
+    /*transform: translateY(0);*/
+    pointer-events: auto;
+}
+
+header.site-header .nav-links a:hover,
+header.site-header .nav-links a:focus {
+    /*background: rgba(255, 255, 255, 0.9);
+    color: #111;*/
+    border-bottom: 3px solid var(--accent);
+    background: none;
+}
+
+
+/* Mobile breakpoint: snap flush left */
+@media (max-width: 880px) {
+  header.site-header .nav-links {
+    display:none;
+  }
+}
+
+/* ========== DROPDOWN SECTIONS (panel below header) ========== */
+/* collapsed state (hidden, not scrollable) */
+header.site-header .dropdown-sections {
+    position: relative;
+    z-index: 2;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 320ms ease, opacity 220ms ease, padding 220ms ease;
+    padding-left: 0;
+    padding-right: 0;
+
+    /* Automatically align with gradient strip */
+    margin-top: calc(-1 * var(--gradient-height));
+    padding-top: var(--gradient-height);
+    /*background: #fff;*/
+    background: var(--yellow);
+    /* ensures dropdown looks solid below gradient */
+}
+
+
+/* Boucning peas */
+/* peas (small green circles) */
+.dropdown-sections {
+  position: relative; /* peas will be absolutely positioned inside this */
+
+   max-height: 100vh;   /* prevent it from growing taller than viewport */
+  overflow-y: auto;    /* allow scrolling inside only */
+  -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
+}
+
+/* make content sit above peas so links/readable text are clickable and visible */
+.dropdown-sections .section {
+  position: relative;
+  z-index: 2;
+}
+
+/* pea style */
+.dropdown-sections .pea {
+  position: absolute;
+  width: 12px;               /* pea diameter */
+  height: 12px;
+  border-radius: 50%;
+  background: #1c9b79;
+  pointer-events: none;      /* preserve clicks on links */
+  will-change: transform;    /* hint for better rendering */
+  z-index: 2;                /* behind .section content */
+  transform: translate3d(0,0,0);
+}
+
+/* Prevent the body from scrolling while the header is opened*/
+body.no-scroll {
+  overflow: hidden;
+  height: 100vh;  /* keep the page from shifting */
+}
+
+
+/* End peas */
+
+
+
+/* expanded (visible). JS controls header max-height and dropdown scrolling */
+header.site-header.open .dropdown-sections {
+    opacity: 1;
+    display: grid;
+    /* gap: 1rem;*/
+}
+
+header.site-header.open .dropdown-sections:first-child {}
+/* each boxed item */
+header.site-header .dropdown-sections .section,
+header.site-header .dropdown-sections .dropdown-section {
+    /*background: #fff;*/
+    background: var(--yellow);
+    /*padding: 1rem;*/
+
+}
+
+header.site-header .dropdown-sections .section {
+    /*background: #fff;*/
+    background: var(--yellow);
+    padding: 60px 1rem;
+    /* safe content padding */
+
+}
+
+/* section headings */
+header.site-header .dropdown-sections h3 {
+    margin-bottom: .5rem;
+    color: var(--accent);
+}
+
+/* === Unique sections === */
+#about p {
+    font-size: 38px;
+    line-height: 54px;
+    font-weight: 300;
+}
+
+#contact a {
+    color: var(--accent);
+    padding-bottom: 3px;
+    border-bottom: 2px solid var(--accent);
+    text-decoration: none;
+}
+
+#contact a:hover {
+    color: var(--yellow);
+    border-bottom: 2px solid var(--yellow);
+}
+
+
+/* Header Dropdown illustration */
+#header_illustration1 {
+  position: relative;
+  bottom: 0;
+  overflow: hidden;
+  width: 100%;
+  height: auto;
+}
+
+#wideIllustration {
+  position: relative;
+  display: block;
+  width: 4175px;   /* fixed size */
+  max-width: none;
+  height: auto;
+  will-change: left; /* smoother rendering */
+  transition: left 0.05s linear; /* tiny easing for smoother visual */
+}
+
+
+
+
+
+
+
+
+
+/* ========== GRADIENT STRIPS ========== */
+/* placed after header-inner in DOM — visible as soft fade below the yellow bar */
+.header-gradient {
+    height: 60px;
+    background: linear-gradient(to bottom,
+            var(--yellow) 0%,
+            rgba(251, 238, 109, 0.65) 40%,
+            rgba(255, 255, 255, 0) 100%);
+            /*var(--yellow) 0%,
+            rgba(255, 255, 255, 0.65) 40%,
+            rgba(255, 255, 255, 0) 100%);*/
+    pointer-events: none;
+    position: relative;
+    z-index: 3;
+  
+
+}
+
+
+
+/* placed after Yellow sections — visible as soft fade below the yellow bar */
+.bottom-gradient {
+    height: var(--gradient-height);
+    background: linear-gradient(to bottom,
+            var(--yellow) 0%,
+            rgba(251, 238, 109, 0.65) 40%,
+            rgba(255, 255, 255, 0) 100%);
+            /*var(--yellow) 0%,
+            rgba(255, 255, 255, 0.65) 40%,
+            rgba(255, 255, 255, 0) 100%);*/
+    pointer-events: none;
+    position: relative;
+
+}
+
+
+/* placed before Yellow sections — visible as soft fade below the yellow bar */
+.top-gradient {
+    height: var(--gradient-height);
+    background: linear-gradient(to top,
+            var(--yellow) 0%,
+            rgba(251, 238, 109, 0.65) 40%,
+            rgba(255, 255, 255, 0) 100%);
+            /*var(--yellow) 0%,
+            rgba(255, 255, 255, 0.65) 40%,
+            rgba(255, 255, 255, 0) 100%);*/
+
+    pointer-events: none;
+    position: relative;
+}
+
+/* This forces an object to the bottom of a div on top of everything. I'm using this to place the yellow gradient on top of the hero section so it doesn't have a cut off white when floating objects move through it.*/
+.forcebottom {
+    position: absolute;
+    bottom: 0;
+    /* Sticks to the bottom of parent */
+    left: 0;
+    width: 100%;
+    /* Optional: span full width */
+    /*color: white;*/
+    z-index: 10;
+    /* Ensures it sits on top of other content */
+}
+
+
+/* ========== HERO & PAGE CONTENT ========== */
+.hero {
+      position: relative;
+  min-height: 70vh; /* adjust as needed */
+  overflow:hidden;
+}
+
+
+.hero {
+  display: flex;            /* make it a flex container */
+  justify-content: center;  /* horizontal centering, optional if needed */
+  align-items: center;      /* vertical centering */
+  height: 70vh;            /* full viewport height */
+  overflow: hidden;         /* prevent scrollbars if needed */
+}
+
+.hero svg {
+  max-width: 100%;          /* keep it responsive */
+  height: auto;             /* maintain aspect ratio */
+}
+
+
+
+/* Hero base */
+.hero-bg {
+  display: none;
+  width: 100%;
+  height: auto;
+}
+
+.hero-desktop {
+  display: block;
+}
+
+@media (max-width: 1080px) { /* adjust breakpoint as needed */
+  .hero-desktop {
+    display: none;
+  }
+  .hero-tablet {
+    display: block;
+    max-height: 60vh;
+  }
+}
+
+.floating-svg {
+  position: absolute;
+  width: 75px;
+  height: 75px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+
+
+
+
+
+
+/* ========== CARDS / GRID / CLAMP / TESTIMONIALS ========== */
+.card-poster {
+    border: none;
+    /*background: #fff;*/
+    background: var(--yellow);
+}
+
+.card-poster img {
+    object-fit: cover;
+    width: 100%;
+    height: 320px;
+}
+
+.link-underline {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+
+
+
+#books {
+    background: var(--yellow);
+}
+
+#books img {
+    padding-bottom: 10px !important;
+}
+
+.truncate,
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.btn {
+
+    Border: none !important;
+}
+
+#books .g-4 {
+    --bs-gutter-y: 5rem;
+}
+
+
+#books a {
+    color: var(--accent);
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 0 0 2px  0  !important;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -.0315em !important;
+    Border-bottom: 2px solid var(--accent) !important;
+    
+    border-radius: 0 !important;
+    /* kill Bootstrap’s default rounding */
+}
+
+#books a:hover {
+ 
+    font-size: 22px;
+    font-weight: 600;
+    Border-bottom: none !important;
+    border-radius: 0 !important;
+    /* kill Bootstrap’s default rounding */
+}
+
+
+
+/* Testimonials Section */
+/* Layout wrapper */
+.testimonial-slider {
+    overflow: hidden;
+    position: relative;
+}
+
+
+/* Quote mark & arrows */
+.quote-mark {
+    font-size: 8rem;
+    font-weight: bold;
+    color: #2c1e50;
+    line-height: 1;
+
+}
+
+/* Arrows */
+
+.nav-arrows {
+  display: flex;
+  gap: 0.5rem; /* space between arrows */
+}
+
+
+.nav-arrows button {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #2c1e50;
+    cursor: pointer;
+
+      display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.nav-arrows svg {
+    width: 32px;
+    height: 32px;
+    stroke-width: 1 !important;
+    stroke-linecap: round !important;
+}
+
+.nav-arrows svg:hover {
+    color: var(--yellow);
+}
+
+
+/* Slider track */
+.slider-container {
+    overflow: hidden;
+}
+
+
+.slider-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.testimonial {
+  flex-shrink: 0;
+  min-width: calc(33.333% + 8.333% - 1.5rem); /* col-4 + offset-2 as fraction of 12 */
+  max-width: calc(33.333% + 8.333% - 1.5rem);
+  padding-right: 1.5rem;
+  padding-left: .75rem;
+  /*margin-right: calc(16.666% + 4.5rem); /* optional: small visual spacing */
+  margin-right: calc(16.666% + 2.75rem); /* = 2/12 */
+  
+}
+
+
+@media (max-width: 1440px) {
+    .testimonial {
+  flex-shrink: 0;
+  min-width: calc(66.667% + 8.333% - 1.5rem); /* col-4 + offset-2 as fraction of 12 */
+  max-width: calc(66.667% + 8.333% - 1.5rem);
+  padding-right: 1.5rem;
+  padding-left: .75rem;
+  /*margin-right: calc(16.666% + 4.5rem); /* optional: small visual spacing */
+  margin-right: calc(16.666% + 2.75rem); /* = 2/12 */
+  
+  
+}
+}
+
+
+.testimonial p {
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1;
+    color: #2c1e50;
+    text-transform: uppercase;
+}
+
+.testimonial .author {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 1rem;
+    color: #2c1e50;
+    text-transform: uppercase;
+}
+
+/* test columns */
+  .demo-row {
+    --bs-gutter-x: 1.5rem; /* Bootstrap default gutter = 24px */
+    margin-bottom: 2rem;
+  }
+
+  .demo-col {
+    background: #3498db;
+    /*color: #fff;*/
+    color: var(--yellow);
+    padding: 1rem;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.5);
+  }
+
+  /* visualize the gutter space */
+  .demo-row > [class*="col"] {
+    background-clip: content-box; /* keep background only inside content */
+    padding: 1rem;
+  }
+
+  .demo-row > [class*="col"]::before {
+    content: "";
+    display: block;
+    background: rgba(255, 0, 0, 0.15); /* light red = gutter */
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+  }
+
+/** testmonial slider mobile layout */
+
+@media (max-width: 768px) {
+  #testimonials .col-md-1.d-flex {
+    position: relative;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow: hidden;
+        height: 30px;
+  }
+
+  .quote-mark {
+    font-size: 5rem;
+    color: #2c1e50;
+    line-height: 1;
+  }
+
+  /* Arrows aligned to top of quote mark */
+  .nav-arrows {
+    position: absolute;
+    right: 1rem;
+    top: 0; /* align with top of quote */
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  #testimonials .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+
+
+/* ========== Footer ========== */
+/* ===== FOOTER ===== */
+footer.footer {
+    background: #FBEE6D;
+    color: #2E2157;
+    font-family: 'Frankly', sans-serif;
+    padding-top: 60px;
+    padding-bottom: 1rem;
+}
+
+/* Logo */
+.footer-logo img {
+    max-width: 180px;
+    height: auto;
+    padding-bottom: 100px;
+}
+
+/* Newsletter */
+.footer-newsletter h3 {
+    font-weight: 600 !important;
+    font-size: 1.5rem;
+    color: #2E2157;
+}
+
+.footer-newsletter input {
+    font-size: 1rem;
+    color: #2E2157 !important;
+}
+
+.footer-newsletter input::placeholder {
+    color: #9b8f7e;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+/* Newsletter arrow button */
+.footer-newsletter button {
+    color: #2E2157;
+    font-size: 1.5rem;
+    transition: transform 0.2s ease;
+}
+
+.footer-newsletter button:hover {
+    transform: translateX(3px);
+}
+
+.footer-bottom {
+    margin-top: 160px;
+
+}
+
+.footer-bottom a,
+.footer-bottom p {
+    font-weight: 600 !important;
+}
+
+footer .form-control {
+    padding: 0;
+}
+
+/* Mailchimp Embed form */
+  #mc-embedded-subscribe-form {
+    max-width: 400px;
+  }
+
+  .email-input {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    outline: none;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+  }
+
+  .email-input:focus {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+
+  .submit-btn {
+    color: black;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .submit-btn:hover .arrow {
+    transform: translateX(4px);
+    color: #555;
+  }
+
+  .submit-btn:focus {
+    outline: none;
+  }
+
+
+
+/* Bottom links */
+.footer-bottom a {
+    color: #2E2157;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    padding-bottom: 0;
+    border-bottom: 3px solid var(--accent);
+}
+
+.footer-bottom a:hover {
+    
+    border-bottom: 3px solid var(--yellow) !important;
+    /*border-bottom: none;*/
+    padding-bottom: 0;
+
+}
+
+#copyright {
+
+}
+
+/* Make footer-bottom stack on mobile and push copyright to bottom */
+@media (max-width: 767.98px) {
+
+    
+  .footer-bottom {
+    display: flex;
+    flex-direction: column-reverse; /* copyright comes last visually */
+    align-items: flex-start;        /* left-align all items */
+    gap: 1rem;                      /* spacing between items */
+    margin-top: 2rem;               /* reduce top margin on mobile */
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-direction: column-reverse; /* copyright at bottom */
+    align-items: flex-start;
+    gap: 1rem; 
+    margin-top: 2rem;
+  }
+
+  #bottom-nav {
+    display: flex;
+    flex-direction: column; /* stack links vertically */
+    gap: 0.5rem;
+    margin-top: 0;
+    margin-bottom:60px;
+        width: auto !important;  /* override 100% */
+    max-width: auto !important;
+  }
+  
+
+ #bottom-nav a {
+    display: inline-block;   /* wrap text only */
+    width: fit-content;
+  }
+
+  /* Logo */
+.footer-logo img {
+    padding-bottom: 60px;
+}
+
+
+.footer-newsletter{
+    padding-bottom:30px;
+}
+
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+    :root {
+        --header-height: 56px;
+        --gradient-height: 48px;
+    }
+
+    .card-poster img {
+        height: 220px;
+    }
+
+    .testimonial {
+        min-width: 88%;
+        max-width: 88%;
+    }
+}
